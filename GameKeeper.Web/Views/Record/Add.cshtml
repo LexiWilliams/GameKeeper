@@ -20,59 +20,31 @@
 <!DOCTYPE html>
 <html>
 <body>
-@* <form method="post">
-    <div  class="mt-3">
-            <label>Choose a Game:</label>
-            <select>
-                @foreach (var game in Model.GameList)
-                {
-                    <option value="@game.Name">@game.Name</option>
-                }
-            </select>
-        </div>
-    <div class="mt-3">
-          <label class="form-label">Select Players:</label>
-          <select multiple>
-
-           @foreach (var player in Model.PlayerList)
-                                {
-                                     <option value="@player.FirstName @player.LastName">@player.FirstName @player.LastName</option>
-                                }
-          </select>
-          <br><br>
-    </div>
-    <div>
-        <button type="submit" class="btn btn-primary">Add Game Record</button>
-    </div>
-
-</form> *@
-
     <div id="app" class="row">
         <div class="col-md-4">
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                 <div class="form-group">
-
                     <label class="control-label">Game Played:</label>
-
                     <select v-model="gamePlayed">
                         <option v-for="game in games" v-bind:value="game">
-                            {{ game.title }}
+                            {{ game.name }}
                         </option>
                     </select>
                     <span>Selected: {{ gamePlayed.title }}</span>
                 </div>
-                <div class="form-group">
 
+                <div class="form-group">
                     <label class="control-label">Choose Players:</label>
                     <select v-model="selectedPlayer"
-                            v-on:change="addNewPlayer"
-                            placeholder="Choose a Player">
+                            v-on:change="addNewPlayer">
                         <option v-for="player in allPlayers" v-bind:value="player">
                             {{ player.firstName }} {{ player.lastName }}
                         </option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label class="control-label">Players in Game:</label>
                     <ul>
@@ -90,9 +62,6 @@
             </form>
         </div>
     </div>
-
-<p>Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
-
 </body>
 </html>
 
@@ -112,41 +81,11 @@
                 gamePlayed: {},
                 selectedPlayer: {},
                 players: [],
-                playersFilter: '',
-                filteredPlayers: [],
                 allPlayers: jsPlayerList,
-                games: [
-                    { title: 'Game Number 1', id: '1' },
-                    { title: 'Game Number 2', id: '2' },
-                    { title: 'Game Number 3', id: '3' }
-                ]
+                games: jsGameList
             },
-            methods: {
-                
-                createPlayerList: function () {
-                    //var self = this;
-
-                    document
-                        .getElementById("modelData")
-                        .getAttribute("items")
-                        .replace(/[\[\]']+/g, "")
-                        .split(",")
-                        .forEach(x => {
-                            this.allPlayers.push(x);
-                        });
-                  
-                    // for (const element of jsPlayerList) {
-                    //      allPlayers.push({ id: element.id, firstName: element.firstName, lastName: element.lastName }),
-                    //     console.log("do the add");
-                    //     console.log(element.firstName);
-                    //     //Vue.set(self.allPlayers, element, { id: element.id, firstName: element.firstName, lastName: element.lastName });
-                    //     console.log(allPlayers);
-
-                    // }
-                    console.log(allPlayers);
-                   
-                        this.selectedPlayer = {}
-                },
+            methods: 
+            {
                 selectPlayer: function (i) {
                     console.log(i);
                 },
