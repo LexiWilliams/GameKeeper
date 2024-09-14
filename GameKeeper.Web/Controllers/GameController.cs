@@ -88,6 +88,15 @@ namespace GameKeeper.Web.Controllers
             return RedirectToAction("List");
         }
 
+        [HttpGet("{filter}")]
+        public async Task<List<Game>> AlLGames()
+        {
+            //var games = dbContext.List(GamePolicy.ByTitleLike(filter));
+            var games = await dbContext.Games.ToListAsync();
+
+            return (games);
+        }
+
 
     }
 }

@@ -5,21 +5,29 @@
 }
 @model List<GameKeeper.Web.Models.Entities.GameRecord>
 
-<h1>Players</h1>
+<h1>Game Records</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>Id</th>
             <th>Game</th>
+              <th>Player</th>
+                <th>Won</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var player in Model)
+        @foreach (var record in Model)
         {
             <tr>
-                <td>@player.Id</td>
-                <td>@player.Game</td>
+                <td>@record.Id</td>
+                <td>@record.Game</td>
+                @foreach (var playerRecord in record.PlayerRecords)
+                {
+                    <td>@playerRecord.Player</td>
+                    <td>@playerRecord.Won</td>
+                }
+                
                 <td>
                     <a>Edit</a>
                 </td>

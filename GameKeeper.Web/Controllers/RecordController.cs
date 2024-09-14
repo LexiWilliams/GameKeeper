@@ -16,24 +16,45 @@ namespace GameKeeper.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            return View();
+            var record = new AddRecordViewModel
+            {
+                GameList = await dbContext.Games.ToListAsync(),
+                PlayerList = await dbContext.Players.ToListAsync()
+            };
+           
+            return View(record);
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(AddRecordViewModel model)
         {
-            var genre = new GameRecord 
-            { 
-                Game = model.Game, 
-                PlayerRecords = model.PlayerRecords
-            };
+            if (ModelState.IsValid && model != null)
+            {
 
-            await dbContext.AddAsync(genre);
+                var playerRecords = new List<PlayerRecord>();
 
-            //save changes to db
-            await dbContext.SaveChangesAsync();
+                for (var i = 0; i < model.PlayersToRecord.Count; i++)
+                {
+                    PlayerRecord r = new PlayerRecord()
+                    {
+                        Player = model.PlayerList[i],
+                        Won = model.WinnerBoolList[i]
+
+                    };
+                }
+                var gameRecord = new GameRecord
+                {
+                    Game = model.GameToRecord,
+                    PlayerRecords = playerRecords
+                };
+
+                await dbContext.AddAsync(gameRecord);
+
+                //save changes to db
+                await dbContext.SaveChangesAsync();
+            }
 
             return RedirectToAction("List");
         }

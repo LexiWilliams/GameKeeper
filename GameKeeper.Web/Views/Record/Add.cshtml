@@ -4,11 +4,175 @@
 @{
 }
 @model GameKeeper.Web.Models.AddRecordViewModel
+
 <h1>Add Game Record</h1>
-<div class="mt-3">
-    <input type="checkbox" class="form-check-input" id="Won" />
-    <label class="form-check-label" for="Won" asp-for="PlayerRecords[1].Won">Winner</label>
-</div>  
-<div class="mt-3">
-    <button type="submit" class="btn btn-primary">Save</button>
-</div>
+
+@* <label >Choose a Game:</label>
+<select name="dog-names" id="dog-names">
+    @foreach (var game in Model.GameList)
+    {
+        <option value="@game.Name">@game.Name</option>
+    }
+</select>
+ *@
+<h1></h1>
+
+<!DOCTYPE html>
+<html>
+<body>
+@* <form method="post">
+    <div  class="mt-3">
+            <label>Choose a Game:</label>
+            <select>
+                @foreach (var game in Model.GameList)
+                {
+                    <option value="@game.Name">@game.Name</option>
+                }
+            </select>
+        </div>
+    <div class="mt-3">
+          <label class="form-label">Select Players:</label>
+          <select multiple>
+
+           @foreach (var player in Model.PlayerList)
+                                {
+                                     <option value="@player.FirstName @player.LastName">@player.FirstName @player.LastName</option>
+                                }
+          </select>
+          <br><br>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">Add Game Record</button>
+    </div>
+
+</form> *@
+
+    <div id="app" class="row">
+        <div class="col-md-4">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+
+                    <label class="control-label">Game Played:</label>
+
+                    <select v-model="gamePlayed">
+                        <option v-for="game in games" v-bind:value="game">
+                            {{ game.title }}
+                        </option>
+                    </select>
+                    <span>Selected: {{ gamePlayed.title }}</span>
+                </div>
+                <div class="form-group">
+
+                    <label class="control-label">Choose Players:</label>
+                    <select v-model="selectedPlayer"
+                            v-on:change="addNewPlayer"
+                            placeholder="Choose a Player">
+                        <option v-for="player in allPlayers" v-bind:value="player">
+                            {{ player.firstName }} {{ player.lastName }}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Players in Game:</label>
+                    <ul>
+                        <li v-for="player in players">
+                            {{ player.firstName }} {{ player.lastName }}
+                            <label> | Winner</label>
+                            <input type="checkbox" v-model="player.won">
+                        </li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <input v-on:click="recordGamePlayed" class="btn btn-default"
+                           value="Record Game" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+<p>Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
+
+</body>
+</html>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+    <script>
+        var jsPlayerList = @Json.Serialize(Model.PlayerList);
+        var jsGameList = @Json.Serialize(Model.GameList);
+        var app = new Vue({
+            el: '#app',
+            data: {
+                gamePlayed: {},
+                selectedPlayer: {},
+                players: [],
+                playersFilter: '',
+                filteredPlayers: [],
+                allPlayers: jsPlayerList,
+                games: [
+                    { title: 'Game Number 1', id: '1' },
+                    { title: 'Game Number 2', id: '2' },
+                    { title: 'Game Number 3', id: '3' }
+                ]
+            },
+            methods: {
+                
+                createPlayerList: function () {
+                    //var self = this;
+
+                    document
+                        .getElementById("modelData")
+                        .getAttribute("items")
+                        .replace(/[\[\]']+/g, "")
+                        .split(",")
+                        .forEach(x => {
+                            this.allPlayers.push(x);
+                        });
+                  
+                    // for (const element of jsPlayerList) {
+                    //      allPlayers.push({ id: element.id, firstName: element.firstName, lastName: element.lastName }),
+                    //     console.log("do the add");
+                    //     console.log(element.firstName);
+                    //     //Vue.set(self.allPlayers, element, { id: element.id, firstName: element.firstName, lastName: element.lastName });
+                    //     console.log(allPlayers);
+
+                    // }
+                    console.log(allPlayers);
+                   
+                        this.selectedPlayer = {}
+                },
+                selectPlayer: function (i) {
+                    console.log(i);
+                },
+                addNewPlayer: function () {
+                    this.players.push({
+                        id: this.selectedPlayer.id,
+                        firstName: this.selectedPlayer.firstName,
+                        lastName: this.selectedPlayer.lastName
+                    }),
+                    this.selectedPlayer = {}
+                    console.log("player added")
+                },
+                recordGamePlayed: function () {
+                    console.log('hi there!');
+                    $.post('/Record/Add',
+                        {
+                            gameId: this.gamePlayed.id,
+                            playerIds: this.players.map(x => x.id),
+                            winnerIds: this.players.filter(x => x.won).map(x => x.id),
+                            teacherIds: this.players.filter(x => x.taught).map(x => x.id)
+                        },
+                        function (response) {
+                            console.log(response);
+                        });
+                }
+            }
+        })
+    </script>
+}
