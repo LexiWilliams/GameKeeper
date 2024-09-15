@@ -9,7 +9,7 @@ namespace GameKeeper.Web.Models.Entities
 
         public int GameId { get; set; }
 
-        public virtual Game Game { get; set; } = null!;
+       // public virtual Game Game { get; set; } = null!;
 
         public virtual ICollection<PlayerRecord> PlayerRecords { get; set; } = new List<PlayerRecord>();
     }

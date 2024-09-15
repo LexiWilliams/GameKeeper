@@ -42,13 +42,9 @@ namespace GameKeeper.Web.Data
 
             modelBuilder.Entity<GameRecord>(entity =>
             {
-                entity.HasOne(d => d.Game).WithMany(p => p.GameRecords).HasForeignKey(d => d.GameId);
+              //  entity.HasOne(d => d.Game).WithMany(p => p.GameRecords).HasForeignKey(d => d.GameId);
             });
 
-            modelBuilder.Entity<Player>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-            });
 
             modelBuilder.Entity<PlayerRecord>(entity =>
             {
@@ -56,7 +52,7 @@ namespace GameKeeper.Web.Data
 
                 entity.HasOne(d => d.GameRecord).WithMany(p => p.PlayerRecords).HasForeignKey(d => d.GameRecordId);
 
-                entity.HasOne(d => d.Player).WithMany(p => p.PlayerRecords).HasForeignKey(d => d.PlayerId);
+              //  entity.HasOne(d => d.Player).WithMany(p => p.PlayerRecords).HasForeignKey(d => d.PlayerId);
             });
 
             OnModelCreatingPartial(modelBuilder);

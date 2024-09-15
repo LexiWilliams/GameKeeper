@@ -41,7 +41,8 @@ namespace GameKeeper.Web.Controllers
                 {
                     PlayerRecord r = new PlayerRecord()
                     {
-                        Player = model.PlayersToRecord[i]
+                        //Player = model.PlayersToRecord[i],
+                        PlayerId = model.PlayersToRecord[i].Id
 
                     };
                     Console.WriteLine("added player");
@@ -50,7 +51,7 @@ namespace GameKeeper.Web.Controllers
                     {
 
 
-                        if (model.WinnerPlayerList.Any(x => x.Id == r.Player.Id))
+                        if (model.WinnerPlayerList.Any(x => x.Id == r.PlayerId))
                         {
                             r.Won = true;
                             Console.WriteLine("won");
@@ -66,7 +67,9 @@ namespace GameKeeper.Web.Controllers
 
                 var gameRecord = new GameRecord
                 {
-                    Game = model.GameToRecord,
+
+                    GameId = model.GameToRecord.Id,
+                    //Game = model.GameToRecord,
                     PlayerRecords = playerRecords
                 };
                

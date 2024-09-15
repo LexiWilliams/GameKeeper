@@ -6,7 +6,7 @@ namespace GameKeeper.Web.Models.Entities
     {
         public int Id { get; set; }
 
-        public int PlayerId { get; set; }
+        public int? PlayerId { get; set; }
 
         public bool Won { get; set; }
 
@@ -14,6 +14,6 @@ namespace GameKeeper.Web.Models.Entities
 
         public virtual GameRecord? GameRecord { get; set; }
 
-        public virtual Player Player { get; set; } = null!;
+        //public virtual Player Player { get; set; } = null!;
     }
 }
