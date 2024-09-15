@@ -2,12 +2,15 @@
 
 namespace GameKeeper.Web.Models.Entities
 {
-    public class Player
+    public partial class Player
     {
-        public Guid Id { get; set; }
 
-        public required string FirstName { get; set; }
+        public int Id { get; set; }
 
-        public required string LastName { get; set; }
+        public string FirstName { get; set; } = null!;
+
+        public string LastName { get; set; } = null!;
+
+        public virtual ICollection<PlayerRecord> PlayerRecords { get; set; } = new List<PlayerRecord>();
     }
 }
