@@ -18,10 +18,12 @@ namespace GameKeeper.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
+            var t = await dbContext.Games.ToListAsync();
+            var t2 = await dbContext.Players.ToListAsync();
             var record = new AddRecordViewModel
             {
-                GameList = await dbContext.Games.ToListAsync(),
-                PlayerList = await dbContext.Players.ToListAsync()
+                GameList = t,
+                PlayerList = t2
             };
            
             return View(record);
@@ -30,7 +32,7 @@ namespace GameKeeper.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(AddRecordViewModel model)
         {
-            if (ModelState.IsValid && model != null)
+            if (ModelState.IsValid && model.PlayersToRecord != null && model.GameToRecord != null)
             {
 
                 var playerRecords = new List<PlayerRecord>();
@@ -39,21 +41,44 @@ namespace GameKeeper.Web.Controllers
                 {
                     PlayerRecord r = new PlayerRecord()
                     {
-                        Player = model.PlayerList[i],
-                        Won = model.WinnerBoolList[i]
+                        Player = model.PlayersToRecord[i]
 
                     };
+                    Console.WriteLine("added player");
+
+                    if (model.WinnerPlayerList != null)
+                    {
+
+
+                        if (model.WinnerPlayerList.Any(x => x.Id == r.Player.Id))
+                        {
+                            r.Won = true;
+                            Console.WriteLine("won");
+                        }
+                        else
+                        {
+                            r.Won = false;
+                            Console.WriteLine("lost");
+                        }
+                    }
+                    playerRecords.Add(r);
                 }
+
                 var gameRecord = new GameRecord
                 {
                     Game = model.GameToRecord,
                     PlayerRecords = playerRecords
                 };
+               
+                   await dbContext.AddAsync(gameRecord);
 
-                await dbContext.AddAsync(gameRecord);
+                    //save changes to db
+                    await dbContext.SaveChangesAsync();
 
-                //save changes to db
-                await dbContext.SaveChangesAsync();
+                
+
+                return RedirectToAction("List");
+
             }
 
             return RedirectToAction("List");
