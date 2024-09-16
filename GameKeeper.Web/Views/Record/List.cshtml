@@ -1,37 +1,48 @@
-﻿@*
+﻿@using System.Diagnostics
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
-@model List<GameKeeper.Web.Models.ViewEntities.ListGameRecordsViewModel>
+@model List<GameKeeper.Web.Models.OrganizationEntities.OrganizedPlayRecord>
+@{
+    var thing = Model.Where(a => a.playerList.Any()).ToList();
+    TraceSwitch generalSwitch = new TraceSwitch("General", "Entire Application");
+    int i = 0;
+    int j = 0;
+}
 
 <h1>Game Records</h1>
 
-<table class="table">
+<table class="table table-bordered table-hover table-responsive">
     <thead>
         <tr>
-            <th>Id</th>
-            <th>Game</th>
-              <th>Player</th>
-                <th>Won</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var record in Model)
         {
             <tr>
-               @*  <td>@record.Id</td>
-                <td>@record.GameId</td>
-                @foreach (var playerRecord in record)
-                {
-                    <td>@playerRecord.PlayerId</td>
-                    <td>@playerRecord.Won</td>
-                } *@
-                
-                <td>
-                    <a>Edit</a>
-                </td>
+                <th scope="col">Game Record Id</th>
+                <th scope="col">Game Name</th>
+                <th scope="col">First Name</th>
+                <th scope="col"> Last Name</th>
+                <th scope="col">Won</th>
             </tr>
+                @foreach (var item in thing[i].playerRecordList)
+                {
+            <tr>
+                    <th scope="row">@record.GameRecordId</th>
+                    <td>@record.game.Name</td>
+                    <td>@thing[i].playerList[j].FirstName</td>
+                    <td>@thing[i].playerList[j].LastName</td>
+                    <td>@thing[i].winnerBoolList[j]</td>
+                    <span>@(j++)</span>
+            </tr>
+                }
+            <span>@(i++)</span>
+            <span>@(j=0)</span>
+
         }
     </tbody>
 </table>
