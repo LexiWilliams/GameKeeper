@@ -2,10 +2,12 @@
 
 namespace GameKeeper.Web.Models.Entities
 {
-    public class Genre
+    public partial class Genre
     {
         public int Id { get; set; }
-        public required string Name { get; set; }
-        public List<Game> Games { get; } = [];
+
+        public string Name { get; set; } = null!;
+
+        public virtual ICollection<GameGenre> GameGenres { get; set; } = new List<GameGenre>();
     }
 }

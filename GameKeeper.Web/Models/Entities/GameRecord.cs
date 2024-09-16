@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameKeeper.Web.Models.Entities
 {
-    public class GameRecord
+    public partial class GameRecord
     {
         public int Id { get; set; }
 
-        public required Game Game { get; set; }
+        public int GameId { get; set; }
 
-        public required List<PlayerRecord> PlayerRecords { get; set; }
+        public virtual ICollection<PlayerRecord> PlayerRecords { get; set; } = new List<PlayerRecord>();
     }
 }

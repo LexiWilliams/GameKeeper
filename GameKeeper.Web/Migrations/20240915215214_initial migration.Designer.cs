@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameKeeper.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240913195044_1")]
-    partial class _1
+    [Migration("20240915215214_initial migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace GameKeeper.Web.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("GameGenre", b =>
-                {
-                    b.Property<int>("GamesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GenresId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GamesId", "GenresId");
-
-                    b.HasIndex("GenresId");
-
-                    b.ToTable("GameGenre");
-                });
 
             modelBuilder.Entity("GameKeeper.Web.Models.Entities.Game", b =>
                 {
@@ -58,6 +43,27 @@ namespace GameKeeper.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("GameKeeper.Web.Models.Entities.GameGenre", b =>
+                {
+                    b.Property<int>("GamesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GenresId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("GamesId", "GenresId");
+
+                    b.HasIndex("GenresId");
+
+                    b.ToTable("GameGenre", (string)null);
                 });
 
             modelBuilder.Entity("GameKeeper.Web.Models.Entities.GameRecord", b =>
@@ -97,9 +103,8 @@ namespace GameKeeper.Web.Migrations
 
             modelBuilder.Entity("GameKeeper.Web.Models.Entities.Player", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -125,8 +130,8 @@ namespace GameKeeper.Web.Migrations
                     b.Property<int?>("GameRecordId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("PlayerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Won")
                         .HasColumnType("bit");
@@ -137,28 +142,32 @@ namespace GameKeeper.Web.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("PlayerRecord");
+                    b.ToTable("PlayerRecord", (string)null);
                 });
 
-            modelBuilder.Entity("GameGenre", b =>
+            modelBuilder.Entity("GameKeeper.Web.Models.Entities.GameGenre", b =>
                 {
-                    b.HasOne("GameKeeper.Web.Models.Entities.Game", null)
-                        .WithMany()
+                    b.HasOne("GameKeeper.Web.Models.Entities.Game", "Games")
+                        .WithMany("GameGenres")
                         .HasForeignKey("GamesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameKeeper.Web.Models.Entities.Genre", null)
-                        .WithMany()
+                    b.HasOne("GameKeeper.Web.Models.Entities.Genre", "Genres")
+                        .WithMany("GameGenres")
                         .HasForeignKey("GenresId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Games");
+
+                    b.Navigation("Genres");
                 });
 
             modelBuilder.Entity("GameKeeper.Web.Models.Entities.GameRecord", b =>
                 {
                     b.HasOne("GameKeeper.Web.Models.Entities.Game", "Game")
-                        .WithMany()
+                        .WithMany("GameRecords")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -168,20 +177,39 @@ namespace GameKeeper.Web.Migrations
 
             modelBuilder.Entity("GameKeeper.Web.Models.Entities.PlayerRecord", b =>
                 {
-                    b.HasOne("GameKeeper.Web.Models.Entities.GameRecord", null)
+                    b.HasOne("GameKeeper.Web.Models.Entities.GameRecord", "GameRecord")
                         .WithMany("PlayerRecords")
                         .HasForeignKey("GameRecordId");
 
                     b.HasOne("GameKeeper.Web.Models.Entities.Player", "Player")
-                        .WithMany()
+                        .WithMany("PlayerRecords")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("GameRecord");
+
                     b.Navigation("Player");
                 });
 
+            modelBuilder.Entity("GameKeeper.Web.Models.Entities.Game", b =>
+                {
+                    b.Navigation("GameGenres");
+
+                    b.Navigation("GameRecords");
+                });
+
             modelBuilder.Entity("GameKeeper.Web.Models.Entities.GameRecord", b =>
+                {
+                    b.Navigation("PlayerRecords");
+                });
+
+            modelBuilder.Entity("GameKeeper.Web.Models.Entities.Genre", b =>
+                {
+                    b.Navigation("GameGenres");
+                });
+
+            modelBuilder.Entity("GameKeeper.Web.Models.Entities.Player", b =>
                 {
                     b.Navigation("PlayerRecords");
                 });
