@@ -1,4 +1,5 @@
 using GameKeeper.Web.Models;
+using GameKeeper.Web.Models.ViewEntities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

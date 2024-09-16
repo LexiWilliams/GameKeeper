@@ -1,6 +1,6 @@
 ﻿using GameKeeper.Web.Models.Entities;
 
-namespace GameKeeper.Web.Models
+namespace GameKeeper.Web.Models.ViewEntities
 {
     public class AddGameViewModel
     {

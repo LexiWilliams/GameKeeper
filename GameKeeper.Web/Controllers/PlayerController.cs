@@ -1,6 +1,6 @@
 ﻿using GameKeeper.Web.Data;
-using GameKeeper.Web.Models;
 using GameKeeper.Web.Models.Entities;
+using GameKeeper.Web.Models.ViewEntities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,7 +44,7 @@ namespace GameKeeper.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit(int id)
         {
             var foundPlayer = await dbContext.Players.FindAsync(id);
 

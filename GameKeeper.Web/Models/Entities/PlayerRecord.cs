@@ -13,7 +13,5 @@ namespace GameKeeper.Web.Models.Entities
         public int? GameRecordId { get; set; }
 
         public virtual GameRecord? GameRecord { get; set; }
-
-        //public virtual Player Player { get; set; } = null!;
     }
 }

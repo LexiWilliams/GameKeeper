@@ -1,8 +1,10 @@
 ﻿using GameKeeper.Web.Data;
 using GameKeeper.Web.Models.Entities;
-using GameKeeper.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GameKeeper.Web.Models.ViewEntities;
+using GameKeeper.Web.Models.OrganizationEntities;
+using System.Linq;
 
 namespace GameKeeper.Web.Controllers
 {
@@ -25,7 +27,7 @@ namespace GameKeeper.Web.Controllers
                 GameList = t,
                 PlayerList = t2
             };
-           
+
             return View(record);
         }
 
@@ -41,9 +43,7 @@ namespace GameKeeper.Web.Controllers
                 {
                     PlayerRecord r = new PlayerRecord()
                     {
-                        //Player = model.PlayersToRecord[i],
                         PlayerId = model.PlayersToRecord[i].Id
-
                     };
                     Console.WriteLine("added player");
 
@@ -69,16 +69,15 @@ namespace GameKeeper.Web.Controllers
                 {
 
                     GameId = model.GameToRecord.Id,
-                    //Game = model.GameToRecord,
                     PlayerRecords = playerRecords
                 };
-               
-                   await dbContext.AddAsync(gameRecord);
 
-                    //save changes to db
-                    await dbContext.SaveChangesAsync();
+                await dbContext.AddAsync(gameRecord);
 
-                
+                //save changes to db
+                await dbContext.SaveChangesAsync();
+
+
 
                 return RedirectToAction("List");
 
@@ -90,12 +89,38 @@ namespace GameKeeper.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> List()
         {
-
-            var records = await dbContext.GameRecords.ToListAsync();
-
-            return View(records);
+            var getRecordsViewModelList = await GetListRecordsViewModel();
+            return View(getRecordsViewModelList);
         }
 
+        [HttpGet]
+        public async Task<PLayRecordRawData> GetListRecordsViewModel()
+        {
+            var records = new PLayRecordRawData
+            {
+                gameList = await dbContext.Games.ToListAsync(),
+                playerList = await dbContext.Players.ToListAsync(),
+                genreList = await dbContext.Genres.ToListAsync(),
+                playerRecordList = await dbContext.PlayerRecords.ToListAsync(),
+                gameRecordList = await dbContext.GameRecords.ToListAsync()
+            };
+            return records;
+        }
 
+        public void OrganizeGameRecords(PLayRecordRawData records)
+        {
+            var recordList = new List<OrganizedPlayRecord>();
+
+            foreach (var record in records.gameRecordList)
+            {
+                var singleRecord = new OrganizedPlayRecord
+                {
+                    game = records.gameList.Where(a => a.Id == record.GameId).FirstOrDefault()
+                };
+
+            }
+
+
+        }
     }
 }

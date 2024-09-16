@@ -1,8 +1,8 @@
 ﻿using GameKeeper.Web.Data;
 using GameKeeper.Web.Models.Entities;
-using GameKeeper.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GameKeeper.Web.Models.ViewEntities;
 
 namespace GameKeeper.Web.Controllers
 {

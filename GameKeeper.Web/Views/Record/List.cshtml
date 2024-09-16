@@ -3,7 +3,7 @@
 *@
 @{
 }
-@model List<GameKeeper.Web.Models.Entities.GameRecord>
+@model List<GameKeeper.Web.Models.ViewEntities.ListGameRecordsViewModel>
 
 <h1>Game Records</h1>
 
@@ -20,13 +20,13 @@
         @foreach (var record in Model)
         {
             <tr>
-                <td>@record.Id</td>
-                <td>@record.Game</td>
-                @foreach (var playerRecord in record.PlayerRecords)
+               @*  <td>@record.Id</td>
+                <td>@record.GameId</td>
+                @foreach (var playerRecord in record)
                 {
-                    <td>@playerRecord.Player</td>
+                    <td>@playerRecord.PlayerId</td>
                     <td>@playerRecord.Won</td>
-                }
+                } *@
                 
                 <td>
                     <a>Edit</a>
